@@ -1,6 +1,6 @@
 % simulate one cycle
 
-Ipeak = 30;
+IPeak = 30;
 Vbus = 100;
 VqSet = 30;
 
