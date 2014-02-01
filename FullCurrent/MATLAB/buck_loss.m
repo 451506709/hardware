@@ -1,5 +1,4 @@
 
-
 N = 4;              % Number of FETs in parallel
 RdsOn = 8e-3;       % On-state resistance of the FETs
 Qg_total = 161e-9;  % Total gate charge
@@ -101,7 +100,7 @@ P_high_on = Vbus*Iavg*0.5*tri*Fs + Vbus*Iavg*0.5*tfv*Fs;
 P_high_off = Vbus*Iavg*0.5*trv*Fs + Vbus*Iavg*0.5*tfi*Fs;
 
 % Plot the Results
-
+figure;
 subplot(521);
 plot(t.*1e9,Qg_on.*1e9,'linewidth',2);
 ylabel('Qg (nC)','fontweight','bold');
@@ -162,6 +161,15 @@ plot(time_off.*1e9,P_off,'linewidth',2);
 ylabel('Power (w)','fontweight','bold');
 xlabel('Time (ns)','fontweight','bold');
 grid on;
+
+% loss types:
+% 1) switching loss
+% 2) gate driver loss
+% 3) reverse recovery loss
+% 4) conduction loss
+
+
+
 
 % The first thing we can calculate is the loss due to gate drive
 % current:

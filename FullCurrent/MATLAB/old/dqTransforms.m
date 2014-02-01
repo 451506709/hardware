@@ -1,10 +1,16 @@
+% simulate one cycle
+
 t = 0:0.001:1;
-w = 4 * pi;
+w = 2 * pi;
 theta = 45*pi/180;
 
-Ia = cos(w*t);
-Ib = cos(w*t-2*pi/3);
-Ic = cos(w*t-4*pi/3);
+IPeak = 30;
+
+Ia = cos(w*t) * IPeak;
+Ib = cos(w*t-2*pi/3) * IPeak;
+Ic = cos(w*t-4*pi/3) * IPeak;
+
+Is = Ia + polar(2*pi/3,Ib) + polar(2*
 
 subplot(331);
 plot(t,Ia,t,Ib,t,Ic);
