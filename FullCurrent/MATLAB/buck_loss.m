@@ -1,11 +1,13 @@
 
-N = 3;              % Number of FETs in parallel
+N = 4;              % Number of FETs in parallel
 RdsOn = 8e-3;       % On-state resistance of the FETs
 Qg_total = 161e-9;  % Total gate charge
 Qgs = 54e-9;        % Gate-Source charge
 Qgd = 52e-9;        % Gate-Drain charge
 Vgs_th = 4;         % Threshold voltage
 Vpl = 6.5;          % Plateau voltage
+
+Qrr = 633e-9;
 
 RgInternal = 1;     % Internal mosfet gate resistance
 
@@ -167,8 +169,10 @@ grid on;
 
 P_switching_loss = (trapz(time_on,P_on) + trapz(time_off,P_off))*Fs;
 P_gate_drive     = (trapz(t,Ig_off*Vgd) + trapz(t,Ig_on*Vgd))*N*Fs*2;
+P_reverse = Qrr * Fs * Vbus * 2 * N;
 P_conduction = IPeak^2 * (RdsOn/N);
-P_loss = P_switching_loss + P_gate_drive + P_conduction
+
+P_loss = P_switching_loss + P_gate_drive + P_conduction + P_reverse
 
 
 % The first thing we can calculate is the loss due to gate drive
