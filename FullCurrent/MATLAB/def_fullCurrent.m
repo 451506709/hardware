@@ -6,11 +6,12 @@ IRFP4668 = MosfetSwitch();
     IRFP4668.Vth = 4;
     IRFP4668.Vpl = 6.5;
     IRFP4668.RgInternal = 1;
+    IRFP4668.Qrr = 633e-9;
     
 duber = Motor();
     duber.L_LN = 0.001;
     duber.R_LN = 0.050;
-    KE = 0.5;
+    duber.KE = 0.5;
 
 fullCurrent = MotorController();
     fullCurrent.N = 4;

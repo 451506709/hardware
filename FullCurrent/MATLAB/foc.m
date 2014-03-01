@@ -66,9 +66,11 @@ Vk = (( max([Va; Vb; Vc])' + min([Va; Vb; Vc])' ) * 0.5);
 V1 = (Va - Vk')/Vbus+0.5;
 V2 = (Vb - Vk')/Vbus+0.5;
 V3 = (Vc - Vk')/Vbus+0.5;
-Vk = Vk + 0.5; 
+
+VN = (V1 + V2 + V3) / 3;                      
+
 subplot(333);
-plot(t,V1,t,V2,t,V3);
-legend('V1','V2','V3')
+plot(t,V1,t,V2,t,V3,t,VN);
+legend('V1','V2','V3','VN')
 
 
