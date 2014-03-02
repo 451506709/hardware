@@ -13,11 +13,12 @@ classdef MotorController
     
     methods
         
-        function [P_loss, P_switching_loss, P_gate_drive, P_reverse, P_conduction] = Loss(mc, Vbus, Vn, Iout, show_plots)
+        function [P_loss, P_switching_loss, P_gate_drive, P_reverse, P_conduction] ...
+                = Loss(mc, Vbus, Vout, Vn, Iout, show_plots)
             
-            
-            % TODO: what inductance is proper here?
-            Iripple = (Vbus-Vn)*(Vout/Vbus)*1/mc.Fs/mc.motor.L_LN;
+            % Find the ripple current
+            Iripple = (Vbus-Vn).*(Vout./Vbus)*1/mc.Fs/mc.motor.L_LN;
+            fprintf('%.3f\n',Iripple);
             
             % Whether the current is positive or negative, the losses will
             % be the same.  The difference is whether it is in the high
