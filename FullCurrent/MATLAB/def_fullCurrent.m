@@ -34,54 +34,49 @@ fullCurrent = MotorController();
     fullCurrent.motor = duber;
 
 Vbus = 130;
-Vq = 100;    
+Vqs = [10 20 30 40 50 60 70 80 90 100];    
+Ipeaks = [5 10 15 20 30 40 50 60 70 80 90 100];
 
-for Ipeak = [5 10 15 20 30 40 50 60 70 80 90 100]
+P_switching_loss = zeros(length(Vqs),length(Ipeaks));
+P_gate_drive = zeros(length(Vqs),length(Ipeaks));
+P_reverse = zeros(length(Vqs),length(Ipeaks));
+P_conduction = zeros(length(Vqs),length(Ipeaks));
+Eff = zeros(length(Vqs),length(Ipeaks));
+
+for i = 1:(length(Vqs))
+    Vq = Vqs(i);
     
-    [Ia Ib Ic V1 V2 V3 VN] = foc(Ipeak, Vq, Vbus, false);
+    for j = 1:(length(Ipeaks))
+        Ipeak = Ipeaks(j);
+        
+        [Ia, Ib, Ic, V1, V2, V3, VN] = foc(Ipeak, Vq, Vbus, false);
 
-    P_loss1 = zeros(1,length(Ia));
-    P_loss2 = zeros(1,length(Ia));
-    P_loss3 = zeros(1,length(Ia));
-    P_switching_loss1 = zeros(1,length(Ia));
-    P_switching_loss2 = zeros(1,length(Ia));
-    P_switching_loss3 = zeros(1,length(Ia));
-    P_gate_drive1 = zeros(1,length(Ia));
-    P_gate_drive2 = zeros(1,length(Ia));
-    P_gate_drive3 = zeros(1,length(Ia));
-    P_reverse1 = zeros(1,length(Ia));
-    P_reverse2 = zeros(1,length(Ia));
-    P_reverse3 = zeros(1,length(Ia));
-    P_conduction1 = zeros(1,length(Ia));
-    P_conduction2 = zeros(1,length(Ia));
-    P_conduction3 = zeros(1,length(Ia));
+        P_loss_ = zeros(1,length(Ia));
+        P_switching_loss_ = zeros(1,length(Ia));
+        P_gate_drive_ = zeros(1,length(Ia));
+        P_reverse_ = zeros(1,length(Ia));
+        P_conduction_ = zeros(1,length(Ia));
 
-    parfor i = 1:length(Ia)
-        [P_loss1(i), P_switching_loss1(i), P_gate_drive1(i), P_reverse1(i), P_conduction1(i)] ...
-                    = fullCurrent.Loss(Vbus, V1(i), VN(i), Ia(i), false);
+        for k = 1:length(Ia)
+            [P_loss_(k), P_switching_loss_(k), P_gate_drive_(k), P_reverse_(k), P_conduction_(k)] ...
+                        = fullCurrent.Loss(Vbus, V1(k), VN(k), Ia(k), false);
+        end
 
-        %[P_loss2(i), P_switching_loss2(i), P_gate_drive2(i), P_reverse2(i), P_conduction2(i)] ...
-        %            = fullCurrent.Loss(Vbus, V2(i), VN(i), Ib(i), false);
+        Pout = (Vq/sqrt(2))*Ipeak/sqrt(2);
+        Ploss = mean(P_loss_ + P_loss_ + P_loss_);
+        P_switching_loss(i,j) = mean(P_switching_loss_ + P_switching_loss_ + P_switching_loss_);
+        P_gate_drive(i,j) = mean(P_gate_drive_ + P_gate_drive_ + P_gate_drive_);
+        P_reverse(i,j) = mean(P_reverse_ + P_reverse_ + P_reverse_);
+        P_conduction(i,j) = mean(P_conduction_ + P_conduction_ + P_conduction_);
 
-        %[P_loss3(i), P_switching_loss3(i), P_gate_drive3(i), P_reverse3(i), P_conduction3(i)] ...
-        %            = fullCurrent.Loss(Vbus, V3(i), VN(i), Ic(i), false);
+        Eff(i,j) = Pout / (Ploss + Pout);
 
-        %fprintf('%i\n',i)
+        fprintf('%9.1fV(B) %9.1fV(Q) %9.1fA(PH) %9.1fW(SW) %9.1fW(GD) %9.1fW(RR) C%9.1fW(CO) %9.1fW(E)\n', ...
+            Vbus,Vq,Ipeak,P_switching_loss(i,j),P_gate_drive(i,j),P_reverse(i,j),P_conduction(i,j),Eff(i,j)*100);
     end
-
-    Pout = (Vq/sqrt(2))*Ipeak/sqrt(2);
-    Ploss = mean(P_loss1 + P_loss1 + P_loss1);
-    P_switching_loss = mean(P_switching_loss1 + P_switching_loss1 + P_switching_loss1);
-    P_gate_drive = mean(P_gate_drive1 + P_gate_drive1 + P_gate_drive1);
-    P_reverse = mean(P_reverse1 + P_reverse1 + P_reverse1);
-    P_conduction = mean(P_conduction1 + P_conduction1 + P_conduction1);
-
-    Eff = Pout / (Ploss + Pout);
-
-
-    fprintf('%9.1fV(B) %9.1fV(Q) %9.1fA(PH) %9.1fW(SW) %9.1fW(GD) %9.1fW(RR) C%9.1fW(CO) %9.1fW(E)\n', ...
-        Vbus,Vq,Ipeak,P_switching_loss,P_gate_drive,P_reverse,P_conduction,Eff*100);
-
 end
-
     
+
+figure;
+surf(Vqs,Ipeaks,Eff)
+

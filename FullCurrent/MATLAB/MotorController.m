@@ -31,7 +31,7 @@ classdef MotorController
             q = [0 mc.mosfet.Qgs mc.mosfet.Qgs+mc.mosfet.Qgd mc.mosfet.QgTotal ];
 
             % Timestep for gate-drive charging
-            dt = 1e-10;
+            dt = 5e-10;
             t = 0:dt:0.2e-6;
 
             % Specify initial conditions for on and off.
