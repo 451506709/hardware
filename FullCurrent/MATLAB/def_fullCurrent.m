@@ -78,5 +78,5 @@ end
     
 
 figure;
-surf(Vqs,Ipeaks,Eff)
+surf(Ipeaks,Vqs,Eff)
 
