@@ -31,8 +31,8 @@ classdef MotorController
             q = [0 mc.mosfet.Qgs mc.mosfet.Qgs+mc.mosfet.Qgd mc.mosfet.QgTotal ];
 
             % Timestep for gate-drive charging
-            dt = 5e-10;
-            t = 0:dt:0.2e-6;
+            dt = 10e-10;
+            t = 0:dt:0.1e-6;
 
             % Specify initial conditions for on and off.
             Ig_on = zeros(1,length(t));
@@ -56,9 +56,11 @@ classdef MotorController
                 % Then determine the turn-off waveforms
                 Qg_off(i) = Qg_off(i-1) - Ig_on(i-1)*dt;
                 Vg_off(i) = interp1(q,Vgs,Qg_off(i));
-                Ig_off(i) = (Vg_off(i)-mc.VGateDiode-mc.mosfet.RgInternal*Ig_off(i-1))...
-                    /(mc.RgExternalDischarge) ...
-                    + (Vg_off(i)-mc.mosfet.RgInternal*Ig_off(i-1))/(mc.RgExternalCharge);
+                %Ig_off(i) = (Vg_off(i)-mc.VGateDiode-mc.mosfet.RgInternal*Ig_off(i-1))...
+                %    /(mc.RgExternalDischarge) ...
+                %    + (Vg_off(i)-mc.mosfet.RgInternal*Ig_off(i-1))/(mc.RgExternalCharge);
+                
+                Ig_off(i) = (Vg_off(i)-mc.mosfet.RgInternal*Ig_off(i-1))/(mc.RgExternalCharge);
             end
                            
             % Next, let's calcualte the loss when the current starts flowing

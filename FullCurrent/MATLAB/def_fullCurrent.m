@@ -18,19 +18,29 @@ STFET = MosfetSwitch();
     STFET.RgInternal = 1.4;
     STFET.Qrr = 2.4e-9;
     
+THOMASFET = MosfetSwitch();
+    THOMASFET.RdsOn = 10.7e-3;
+    THOMASFET.QgTotal = 65e-9;
+    THOMASFET.Qgs = 23e-9;
+    THOMASFET.Qgd = 8e-9;
+    THOMASFET.Vth = 3;
+    THOMASFET.Vpl = 4.4;
+    THOMASFET.RgInternal = 2.4;
+    THOMASFET.Qrr = 640e-9;
+    
 duber = Motor();
     duber.L_LN = 0.0005;
     duber.R_LN = 0.050;
     duber.KE = 0.5;
 
 fullCurrent = MotorController();
-    fullCurrent.N = 2;
+    fullCurrent.N = 4;
     fullCurrent.VGateDrive = 15;
     fullCurrent.RgExternalCharge = 6.8/2;
     fullCurrent.RgExternalDischarge = 2.7;
     fullCurrent.VGateDiode = 0.5;
-    fullCurrent.Fs = 4000;
-    fullCurrent.mosfet = IRFP4668;
+    fullCurrent.Fs = 16000;
+    fullCurrent.mosfet = THOMASFET;
     fullCurrent.motor = duber;
 
 Vbus = 130;
@@ -78,5 +88,13 @@ end
     
 
 figure;
-surf(Ipeaks,Vqs,Eff)
+colormap(flipud(jet))
+contourf(Ipeaks,Vqs,Eff, .85:.01:1)
+xlabel('Current (A)')
+ylabel('Voltage (V)')
+caxis([.85, 1])
+colorbar;
+grid on;
+
+
 
